@@ -62,11 +62,15 @@ void dscClassicKeypadInterface::begin(Stream &_stream) {
 
   // esp32 timer1 calls dscClockInterrupt()
   #elif defined(ESP32)
-  timer1 = timerBegin(1, 80, true);
+  //timer1 = timerBegin(1, 80, true);
+  //timerStop(timer1);
+  //timerAttachInterrupt(timer1, &dscClockInterrupt, true);
+  //timerAlarmWrite(timer1, 1000, true);
+  //timerAlarmEnable(timer1);
+  timer1 = timerBegin(1000000);  // 1 MHz = 1 µs per tick
   timerStop(timer1);
-  timerAttachInterrupt(timer1, &dscClockInterrupt, true);
-  timerAlarmWrite(timer1, 1000, true);
-  timerAlarmEnable(timer1);
+  timerAttachInterrupt(timer1, &dscClockInterrupt);
+  timerAlarm(timer1, 1000, true, 0);  // 1000 ticks = 1 ms interval
   #endif
 
   intervalStart = millis();
